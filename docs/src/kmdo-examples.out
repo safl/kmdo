@@ -1,0 +1,18 @@
+args:
+  path: '/home/slund/git/kmdo/docs/src/examples'
+  recursive: False
+results:
+- out_fp: '/home/slund/git/kmdo/docs/src/examples/kmdo.uone.out'
+  cmd_fp: '/home/slund/git/kmdo/docs/src/examples/kmdo.uone.cmd'
+  cmd: 'kmdo'
+  rcode: 2
+  uone: True
+  err: False
+- out_fp: '/home/slund/git/kmdo/docs/src/examples/kmdo.out'
+  cmd_fp: '/home/slund/git/kmdo/docs/src/examples/kmdo.cmd'
+  cmd: 'kmdo --help'
+  rcode: 0
+  uone: False
+  err: False
+nerrs: 0
+

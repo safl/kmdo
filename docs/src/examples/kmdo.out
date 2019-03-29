@@ -1,0 +1,11 @@
+usage: kmdo [-h] [-r] path
+
+Run commands from .cmd files, storing output in .out files
+
+positional arguments:
+  path             Path to DIR containing .cmd files
+
+optional arguments:
+  -h, --help       show this help message and exit
+  -r, --recursive  go deepah!
+
