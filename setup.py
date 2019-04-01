@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name="kmdo",
-    version="0.0.1",
+    version="0.0.2",
     description="Command-line tool for auto generating command output",
     author="Simon A. F. Lund",
     author_email="safl@safl.dk",
