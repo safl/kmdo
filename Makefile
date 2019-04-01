@@ -9,6 +9,8 @@ NEXT_VERSION=${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${NEXT_VERSION_PA
 
 INSTALL_OPTS?=
 
+default: user dev
+
 .PHONY: user
 user:
 	$(eval INSTALL_OPTS := --user)
