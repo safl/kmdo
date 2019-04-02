@@ -31,6 +31,8 @@ dev: uninstall install
 bump:
 	@echo "# Bumping '${PROJECT_VERSION}' to '${NEXT_VERSION}'"
 	@sed -i -e s/"version=\".*\""/"version=\"${NEXT_VERSION}\""/g setup.py
+	@sed -i -e s/"version=\".*\""/"version=\"${NEXT_VERSION}\""/g docs/src/conf.py
+	@sed -i -e s/"release=\".*\""/"release=\"${NEXT_VERSION}\""/g docs/src/conf.py
 	@sed -i -e s/"^VERSION_PATCH = .*"/"VERSION_PATCH = ${NEXT_VERSION_PATCH}"/g bin/kmdo
 
 .PHONY: clean
