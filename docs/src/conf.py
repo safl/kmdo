@@ -19,8 +19,8 @@ master_doc = 'index'
 project = u'kmdo'
 copyright = u'2018, SAFL'
 
-version = '0.0.1'
-release = '0.0.1'
+version = '0.0.3'
+release = '0.0.3'
 
 exclude_patterns = []
 
