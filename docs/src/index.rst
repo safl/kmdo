@@ -27,7 +27,7 @@ Or install it at user-level via the pip:
 
 .. code:: bash
 
-  pip install kmdo
+  pip install --user kmdo
 
 .. note::
 
