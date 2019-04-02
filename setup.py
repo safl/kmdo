@@ -1,13 +1,26 @@
 """
     Definition of KMDO distribution package
 """
+import codecs
 import glob
+import os
 from setuptools import setup
+
+def read(*parts):
+    """Read parts to use a e.g. long_description"""
+
+    here = os.path.abspath(os.path.dirname(__file__))
+
+    # intentionally *not* adding an encoding option to open, See:
+    #   https://github.com/pypa/virtualenv/issues/201#issuecomment-3145690
+    with codecs.open(os.path.join(here, *parts), 'r') as pfp:
+        return pfp.read()
 
 setup(
     name="kmdo",
     version="0.0.2",
     description="Command-line tool for auto generating command output",
+    long_description=read('README.rst'),
     author="Simon A. F. Lund",
     author_email="safl@safl.dk",
     url="https://github.com/safl/kmdo",
