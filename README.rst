@@ -9,6 +9,10 @@ kmdo - auto-generate command-line usage examples
    :target: https://kmdo.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
+.. image:: https://img.shields.io/pypi/v/kmdo.svg
+   :target: https://pypi.org/project/kmdo
+   :alt: PyPI
+
 Command-line tool to auto-generate command-line usage examples.
 
 Please take a look at the documentation for how to install and use ``kmdo``:
