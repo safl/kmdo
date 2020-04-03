@@ -61,7 +61,7 @@ def produce_cmd_output(args):
         if args.recursive and root != args.path:
             continue
 
-        for fname in (fname for fname in fnames if fname.endswith(".cmd")):
+        for fname in sorted(fname for fname in fnames if fname.endswith(".cmd")):
             cmd_fpath = os.sep.join([root, fname])
 
             out_fpath = cmd_fpath.replace(".cmd", ".out")
