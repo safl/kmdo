@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
     Run commands from .cmd files, storing output in .out files
 """
@@ -83,7 +83,7 @@ def produce_cmd_output(args):
             if errored and not uone:
                 continue
 
-            update_file(out_fpath, "\n".join(output))
+            update_file(out_fpath, "\n".join([o.decode("utf-8") for o in output]))
 
 def main(args):
     """Entry point"""
