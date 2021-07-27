@@ -28,10 +28,12 @@ def update_file(fpath, content):
         output.write(content)
 
 
-def cmd_run(cmd):
+def cmd_run(cmd, args):
     """Execute the given command and return stdout, stderr, and returncode"""
 
-    process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    process = Popen(
+        cmd, shell=True, stdout=PIPE, stderr=PIPE, executable=args.shell
+    )
     out, err = process.communicate()
 
     return out, err, process.returncode
@@ -70,7 +72,7 @@ def produce_cmd_output(args):
             errored = False
 
             for cmd in cmd_from_file(cmd_fpath):
-                stdout, stderr, rcode = cmd_run(cmd)
+                stdout, stderr, rcode = cmd_run(cmd, args)
 
                 output.append(stdout)
                 output.append(stderr)
@@ -126,6 +128,10 @@ if __name__ == "__main__":
         "-r", "--recursive",
         action="store_true",
         help="go deepah!"
+    )
+    PRSR.add_argument(
+        "-s", "--shell",
+        help="Absolute path to the Shell to use"
     )
 
     ARGS = PRSR.parse_args()
