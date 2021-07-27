@@ -31,10 +31,11 @@ def update_file(fpath, content):
 def cmd_run(cmd, args):
     """Execute the given command and return stdout, stderr, and returncode"""
 
-    process = Popen(
-        cmd, shell=True, stdout=PIPE, stderr=PIPE, executable=args.shell
-    )
-    out, err = process.communicate()
+    with Popen(
+        cmd, shell=True, stdout=PIPE, stderr=PIPE,
+        executable=args.shell
+    ) as process:
+        out, err = process.communicate()
 
     return out, err, process.returncode
 
