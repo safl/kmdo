@@ -18,7 +18,7 @@ def read(*parts):
 
 setup(
     name="kmdo",
-    version="0.0.4",
+    version="0.0.5",
     description="Command-line tool for auto generating command output",
     long_description=read('README.rst'),
     author="Simon A. F. Lund",
