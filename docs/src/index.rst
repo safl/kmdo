@@ -21,13 +21,13 @@ Install ``kmdo`` system-wide via the pip:
 
 .. code:: bash
 
-  sudo pip install kmdo
+  sudo pip3 install kmdo
 
 Or install it at user-level via the pip:
 
 .. code:: bash
 
-  pip install --user kmdo
+  pip3 install --user kmdo
 
 .. note::
 

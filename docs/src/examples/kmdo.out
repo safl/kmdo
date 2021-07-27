@@ -1,11 +1,13 @@
-usage: kmdo [-h] [-r] path
+usage: kmdo [-h] [-r] [-s SHELL] path
 
 Run commands from .cmd files, storing output in .out files
 
 positional arguments:
-  path             Path to DIR containing .cmd files
+  path                  Path to DIR containing .cmd files
 
 optional arguments:
-  -h, --help       show this help message and exit
-  -r, --recursive  go deepah!
+  -h, --help            show this help message and exit
+  -r, --recursive       go deepah!
+  -s SHELL, --shell SHELL
+                        Absolute path to the Shell to use
 
