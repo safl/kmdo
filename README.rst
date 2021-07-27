@@ -1,7 +1,7 @@
 kmdo - auto-generate command-line usage examples
 ================================================
 
-.. image:: https://travis-ci.com/safl/kmdo.svg?branch=master
+.. image:: https://travis-ci.com/safl/kmdo.svg?branch=main
    :target: https://travis-ci.com/safl/kmdo
    :alt: Build Status
 
