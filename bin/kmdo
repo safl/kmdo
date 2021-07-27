@@ -43,7 +43,8 @@ def cmd_from_file(fpath):
     """Produces a 'cmd' as a list of strings from the given 'fpath'"""
 
     # Grab commands
-    cmds = [line.strip() for line in open(fpath).readlines()]
+    with open(fpath) as cmdfd:
+        cmds = [line.strip() for line in cmdfd.readlines()]
 
     # Merge those line-continuations
     cmds = "\n".join(cmds).replace("\\\n", "").splitlines()
