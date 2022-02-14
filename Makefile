@@ -17,11 +17,11 @@ user:
 
 .PHONY: install
 install:
-	pip install . $(INSTALL_OPTS)
+	pip3 install . $(INSTALL_OPTS)
 
 .PHONY: uninstall
 uninstall:
-	pip uninstall ${PROJECT_NAME} --yes || true
+	pip3 uninstall ${PROJECT_NAME} --yes || true
 
 .PHONY: dev
 dev: uninstall install

@@ -18,11 +18,11 @@ def read(*parts):
 
 setup(
     name="kmdo",
-    version="0.0.5",
+    version="1.0.1",
     description="Command-line tool for auto generating command output",
     long_description=read('README.rst'),
     author="Simon A. F. Lund",
-    author_email="safl@safl.dk",
+    author_email="os@safl.dk",
     url="https://github.com/safl/kmdo",
     license="Apache License 2.0",
     install_requires=[],
@@ -32,7 +32,6 @@ setup(
     ],
     options={"bdist_wheel":{"universal":True}},
     classifiers=[
-        "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",

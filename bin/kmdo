@@ -68,6 +68,7 @@ def produce_cmd_output(args):
             cmd_fpath = os.sep.join([root, fname])
 
             out_fpath = cmd_fpath.replace(".cmd", ".out")
+            err_fpath = cmd_fpath.replace(".cmd", ".err")
             uone = cmd_fpath.endswith(".uone.cmd")
             output = []
             errored = False
@@ -83,10 +84,12 @@ def produce_cmd_output(args):
 
                 yield out_fpath, cmd_fpath, cmd, rcode, uone, err
 
-            if errored and not uone:
-                continue
+            if errored:
+                update_file(err_fpath, "\n".join([o.decode("utf-8") for o in output]))
 
-            update_file(out_fpath, "\n".join([o.decode("utf-8") for o in output]))
+            if not errored or uone:
+                update_file(out_fpath, "\n".join([o.decode("utf-8") for o in output]))
+
 
 def main(args):
     """Entry point"""
