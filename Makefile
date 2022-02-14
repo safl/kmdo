@@ -9,22 +9,24 @@ NEXT_VERSION=${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${NEXT_VERSION_PA
 
 INSTALL_OPTS?=
 
-default: user dev
-
-.PHONY: user
-user:
-	$(eval INSTALL_OPTS := --user)
+.PHONY: default
+default: uninstall install
+	@echo "# DONE!"
 
 .PHONY: install
 install:
-	pip3 install . $(INSTALL_OPTS)
+	pip install . --user
 
 .PHONY: uninstall
 uninstall:
-	pip3 uninstall ${PROJECT_NAME} --yes || true
+	pip uninstall ${PROJECT_NAME} --yes || echo "Cannot uninstall => That is OK"
+
+.PHONY: install-system
+install-system:
+	pip install .
 
 .PHONY: dev
-dev: uninstall install
+dev: uninstall install selftest-view
 	@echo -n "# dev: "; date
 
 .PHONY: bump
