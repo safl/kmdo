@@ -1,17 +1,17 @@
 kmdo - auto-generate command-line usage examples
 ================================================
 
-.. image:: https://travis-ci.com/safl/kmdo.svg?branch=main
-   :target: https://travis-ci.com/safl/kmdo
+.. image:: https://img.shields.io/pypi/v/kmdo.svg
+   :target: https://pypi.org/project/kmdo
+   :alt: PyPI
+
+.. image:: https://github.com/safl/kmdo/workflows/selftest/badge.svg
+   :target: https://github.com/safl/kmdo/actions
    :alt: Build Status
 
 .. image:: https://readthedocs.org/projects/kmdo/badge/?version=latest
    :target: https://kmdo.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-
-.. image:: https://img.shields.io/pypi/v/kmdo.svg
-   :target: https://pypi.org/project/kmdo
-   :alt: PyPI
 
 Command-line tool to auto-generate command-line usage examples.
 
