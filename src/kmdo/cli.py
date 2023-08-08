@@ -59,6 +59,9 @@ def produce_cmd_output(args):
             continue
 
         for fname in sorted(fname for fname in fnames if fname.endswith(".cmd")):
+            if args.exclude in args.exclude in fname:
+                continue
+
             cmd_fpath = os.sep.join([root, fname])
 
             out_fpath = cmd_fpath.replace(".cmd", ".out")
@@ -92,6 +95,7 @@ def parse_args():
     parser.add_argument("path", type=str, help="Path to DIR containing .cmd files")
     parser.add_argument("-r", "--recursive", action="store_true", help="go deepah!")
     parser.add_argument("-s", "--shell", help="Absolute path to the Shell to use")
+    parser.add_argument("-x", "--exclude", help="Exclude command-files matching this")
 
     args = parser.parse_args()
     args.path = expand_path(args.path)
