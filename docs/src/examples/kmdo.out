@@ -1,4 +1,4 @@
-usage: kmdo [-h] [-r] [-s SHELL] path
+usage: kmdo [-h] [-r] [-s SHELL] [-x EXCLUDE] path
 
 Run commands from .cmd files, storing output in .out files
 
@@ -10,4 +10,6 @@ options:
   -r, --recursive       go deepah!
   -s SHELL, --shell SHELL
                         Absolute path to the Shell to use
+  -x EXCLUDE, --exclude EXCLUDE
+                        Exclude command-files matching this
 
