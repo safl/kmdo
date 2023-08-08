@@ -59,7 +59,7 @@ def produce_cmd_output(args):
             continue
 
         for fname in sorted(fname for fname in fnames if fname.endswith(".cmd")):
-            if args.exclude in args.exclude in fname:
+            if args.exclude and args.exclude in fname:
                 continue
 
             cmd_fpath = os.sep.join([root, fname])
