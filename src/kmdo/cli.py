@@ -3,16 +3,11 @@
     Run commands from .cmd files, storing output in .out files
 """
 from __future__ import print_function
-from subprocess import Popen, PIPE
-import argparse
-import sys
-import os
 
-VERSION_MAJOR = 1
-VERSION_MINOR = 0
-VERSION_PATCH = 2
-VERSION = "%d.%d.%d" % (VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH)
-__version__ = VERSION
+import argparse
+import os
+import sys
+from subprocess import PIPE, Popen
 
 
 def expand_path(path):
@@ -24,7 +19,7 @@ def expand_path(path):
 def update_file(fpath, content):
     """Writes 'content' to 'fpath'"""
 
-    with open(fpath, 'w+') as output:
+    with open(fpath, "w+") as output:
         output.write(content)
 
 
@@ -32,7 +27,7 @@ def cmd_run(cmd, args):
     """Execute the given command and return stdout, stderr, and returncode"""
 
     with Popen(
-            cmd, shell=True, stdout=PIPE, stderr=PIPE, executable=args.shell
+        cmd, shell=True, stdout=PIPE, stderr=PIPE, executable=args.shell
     ) as process:
         out, err = process.communicate()
 
@@ -60,7 +55,6 @@ def produce_cmd_output(args):
     """Do the actual work"""
 
     for root, _, fnames in os.walk(args.path):
-
         if args.recursive and root != args.path:
             continue
 
@@ -91,8 +85,24 @@ def produce_cmd_output(args):
                 update_file(out_fpath, "\n".join([o.decode("utf-8") for o in output]))
 
 
-def main(args):
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Run commands from .cmd files, storing output in .out files"
+    )
+    parser.add_argument("path", type=str, help="Path to DIR containing .cmd files")
+    parser.add_argument("-r", "--recursive", action="store_true", help="go deepah!")
+    parser.add_argument("-s", "--shell", help="Absolute path to the Shell to use")
+
+    args = parser.parse_args()
+    args.path = expand_path(args.path)
+
+    return args
+
+
+def main():
     """Entry point"""
+
+    args = parse_args()
 
     nerrs = 0
 
@@ -118,27 +128,3 @@ def main(args):
     print("nerrs: %r" % nerrs)
 
     return nerrs
-
-if __name__ == "__main__":
-    PRSR = argparse.ArgumentParser(
-        description="Run commands from .cmd files, storing output in .out files"
-    )
-    PRSR.add_argument(
-        "path",
-        type=str,
-        help="Path to DIR containing .cmd files"
-    )
-    PRSR.add_argument(
-        "-r", "--recursive",
-        action="store_true",
-        help="go deepah!"
-    )
-    PRSR.add_argument(
-        "-s", "--shell",
-        help="Absolute path to the Shell to use"
-    )
-
-    ARGS = PRSR.parse_args()
-    ARGS.path = expand_path(ARGS.path)
-
-    sys.exit(main(ARGS))

@@ -17,22 +17,15 @@ This documentation is an example of how this can be used in concert with
 Installation
 ============
 
-Install ``kmdo`` system-wide via the pip:
+Install ``kmdo`` system-wide via the pip using ``pipx``:
 
 .. code:: bash
 
-  sudo pip3 install kmdo
-
-Or install it at user-level via the pip:
-
-.. code:: bash
-
-  pip3 install --user kmdo
+  pipx install kmdo
 
 .. note::
-
-  When doing user-level install, then include the ``pip`` binary install path
-  in your ``PATH`` definition. For example ``PATH="$PATH:$HOME/.local/bin"``
+   Ensure that command-line tools installed using ``pipx`` are added to
+   ``PATH`` by running ``pipx ensurepath``.
 
 Usage
 =====
@@ -71,4 +64,3 @@ file ``kmdo.uone.out``:
 
 .. literalinclude:: examples/kmdo.uone.out
    :language: bash
-

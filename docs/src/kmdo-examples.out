@@ -1,15 +1,15 @@
 args:
-  path: '/home/safl/git/kmdo/docs/src/examples'
+  path: '/Users/safl/git/kmdo/docs/src/examples'
   recursive: False
 results:
-- out_fp: '/home/safl/git/kmdo/docs/src/examples/kmdo.out'
-  cmd_fp: '/home/safl/git/kmdo/docs/src/examples/kmdo.cmd'
+- out_fp: '/Users/safl/git/kmdo/docs/src/examples/kmdo.out'
+  cmd_fp: '/Users/safl/git/kmdo/docs/src/examples/kmdo.cmd'
   cmd: 'kmdo --help'
   rcode: 0
   uone: False
   err: False
-- out_fp: '/home/safl/git/kmdo/docs/src/examples/kmdo.uone.out'
-  cmd_fp: '/home/safl/git/kmdo/docs/src/examples/kmdo.uone.cmd'
+- out_fp: '/Users/safl/git/kmdo/docs/src/examples/kmdo.uone.out'
+  cmd_fp: '/Users/safl/git/kmdo/docs/src/examples/kmdo.uone.cmd'
   cmd: 'kmdo'
   rcode: 2
   uone: True

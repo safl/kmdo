@@ -2,8 +2,8 @@
 #
 # kmdo documentation build configuration file
 #
-import sys
 import os
+import sys
 
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
@@ -16,11 +16,11 @@ templates_path = ["_templates"]
 source_suffix = ".rst"
 master_doc = "index"
 
-project = u"kmdo"
-copyright = u"2018, SAFL"
+project = "kmdo"
+copyright = "2023, SAFL"
 
-version = "1.0.2"
-release = "1.0.2"
+version = "1.0.4"
+release = "1.0.4"
 
 exclude_patterns = []
 
@@ -29,6 +29,7 @@ pygments_style = "sphinx"
 
 if not on_rtd:
     import sphinx_rtd_theme
+
     html_theme = "sphinx_rtd_theme"
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 

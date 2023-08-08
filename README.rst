@@ -5,7 +5,7 @@ kmdo - auto-generate command-line usage examples
    :target: https://pypi.org/project/kmdo
    :alt: PyPI
 
-.. image:: https://github.com/safl/kmdo/workflows/selftest/badge.svg
+.. image:: https://github.com/safl/kmdo/workflows/build_check_publish/badge.svg
    :target: https://github.com/safl/kmdo/actions
    :alt: Build Status
 
