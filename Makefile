@@ -1,11 +1,4 @@
-DOC_BUILD_DIR=build
 PROJECT_NAME=kmdo
-PROJECT_VERSION_MAJOR=$(shell grep "VERSION_MAJOR = ." src/kmdo/__init__.py | cut -d " " -f 3)
-PROJECT_VERSION_MINOR=$(shell grep "VERSION_MINOR = ." src/kmdo/__init__.py | cut -d " " -f 3)
-PROJECT_VERSION_PATCH=$(shell grep "VERSION_PATCH = ." src/kmdo/__init__.py | cut -d " " -f 3)
-PROJECT_VERSION=${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
-NEXT_VERSION_PATCH=$$((${PROJECT_VERSION_PATCH} + 1))
-NEXT_VERSION=${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${NEXT_VERSION_PATCH}
 
 INSTALL_OPTS?=
 
@@ -29,11 +22,11 @@ install:
 clean:
 	@rm -r dist || true
 
-.PHONY: release-build
+.PHONY: build
 build:
-	python3 setup.py sdist
+	python3 -m build --sdist
 
-.PHONY: release-upload
+.PHONY: upload
 upload:
 	twine upload dist/*
 
@@ -41,9 +34,26 @@ upload:
 release: clean build upload
 	@echo -n "# rel: "; date
 
+.PHONY: test
+test:
+	python3 -m pytest
+
+.PHONY: format
+format:
+	ruff format src/ tests/
+	ruff check --fix src/ tests/
+
+.PHONY: lint
+lint:
+	ruff check src/ tests/
+
 .PHONY: bump
 bump:
-	@echo "# Bumping '${PROJECT_VERSION}' to '${NEXT_VERSION}'"
-	@sed -i -e s/"version = \".*\""/"version = \"${NEXT_VERSION}\""/g docs/src/conf.py
-	@sed -i -e s/"release = \".*\""/"release = \"${NEXT_VERSION}\""/g docs/src/conf.py
-	@sed -i -e s/"^VERSION_PATCH = .*"/"VERSION_PATCH = ${NEXT_VERSION_PATCH}"/g src/kmdo/__init__.py
+	@current=$$(python3 -c "import kmdo; print(kmdo.__version__)"); \
+	major=$$(echo "$$current" | cut -d. -f1); \
+	minor=$$(echo "$$current" | cut -d. -f2); \
+	patch=$$(echo "$$current" | cut -d. -f3); \
+	patch=$$((patch + 1)); \
+	new="$$major.$$minor.$$patch"; \
+	sed -i "s/__version__ = \".*\"/__version__ = \"$$new\"/" src/kmdo/__init__.py; \
+	echo "Bumped $$current -> $$new"

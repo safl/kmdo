@@ -1,15 +1,52 @@
 [build-system]
-requires = [
-    "setuptools>=54",
-    "wheel"
-]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
+[project]
+name = "kmdo"
+dynamic = ["version"]
+description = "Command-line tool for auto generating command output"
+readme = "README.rst"
+license = "BSD-3-Clause"
+requires-python = ">=3.10"
+authors = [
+    { name = "Simon A. F. Lund", email = "os@safl.dk" },
+]
+maintainers = [
+    { name = "Simon A. F. Lund", email = "os@safl.dk" },
+]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python",
+    "Topic :: Software Development",
+    "Topic :: Text Processing",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+homepage = "https://kmdo.readthedocs.io"
+documentation = "https://kmdo.readthedocs.io"
+repository = "https://github.com/safl/kmdo"
+
+[project.scripts]
+kmdo = "kmdo.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "kmdo.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
 line-length = 88
 
-[tool.isort]
-profile = "black"
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["kmdo"]
 
 [tool.pytest.ini_options]
-addopts = "-W ignore::DeprecationWarning"
+testpaths = ["tests"]

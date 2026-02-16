@@ -2,28 +2,25 @@
 """
     Run commands from .cmd files, storing output in .out files
 """
-from __future__ import print_function
-
 import argparse
-import os
-import sys
+from pathlib import Path
 from subprocess import PIPE, Popen
+from typing import Generator
 
 
-def expand_path(path):
+def expand_path(path: str) -> Path:
     """Expand variables in and provide absolute version of the given 'path'"""
 
-    return os.path.abspath(os.path.expanduser(os.path.expandvars(path)))
+    return Path(path).expanduser().resolve()
 
 
-def update_file(fpath, content):
+def update_file(fpath: Path, content: str) -> None:
     """Writes 'content' to 'fpath'"""
 
-    with open(fpath, "w+") as output:
-        output.write(content)
+    fpath.write_text(content)
 
 
-def cmd_run(cmd, args):
+def cmd_run(cmd: str, args: argparse.Namespace) -> tuple[bytes, bytes, int]:
     """Execute the given command and return stdout, stderr, and returncode"""
 
     with Popen(
@@ -34,61 +31,59 @@ def cmd_run(cmd, args):
     return out, err, process.returncode
 
 
-def cmd_from_file(fpath):
+def cmd_from_file(fpath: Path) -> list[str]:
     """Produces a 'cmd' as a list of strings from the given 'fpath'"""
 
-    # Grab commands
-    with open(fpath) as cmdfd:
-        cmds = [line.strip() for line in cmdfd.readlines()]
+    cmds = [line.strip() for line in fpath.read_text().splitlines()]
 
     # Merge those line-continuations
     cmds = "\n".join(cmds).replace("\\\n", "").splitlines()
 
     if not cmds:
-        fname = os.path.basename(fpath)
-        cmds = [fname.replace(".uone", "").replace(".cmd", "")]
+        cmds = [fpath.name.replace(".uone", "").replace(".cmd", "")]
 
     return cmds
 
 
-def produce_cmd_output(args):
+def produce_cmd_output(
+    args: argparse.Namespace,
+) -> Generator[tuple[Path, Path, str, int, bool, bool], None, None]:
     """Do the actual work"""
 
-    for root, _, fnames in os.walk(args.path):
-        if args.recursive and root != args.path:
+    for item in sorted(args.path.rglob("*.cmd")):
+        if not item.is_file():
+            continue
+        if args.recursive and item.parent != args.path:
+            continue
+        if args.exclude and args.exclude in item.name:
             continue
 
-        for fname in sorted(fname for fname in fnames if fname.endswith(".cmd")):
-            if args.exclude and args.exclude in fname:
-                continue
+        cmd_fpath = item
+        out_fpath = cmd_fpath.parent / cmd_fpath.name.replace(".cmd", ".out")
+        err_fpath = cmd_fpath.parent / cmd_fpath.name.replace(".cmd", ".err")
+        uone = cmd_fpath.name.endswith(".uone.cmd")
+        output: list[bytes] = []
+        errored = False
 
-            cmd_fpath = os.sep.join([root, fname])
+        for cmd in cmd_from_file(cmd_fpath):
+            stdout, stderr, rcode = cmd_run(cmd, args)
 
-            out_fpath = cmd_fpath.replace(".cmd", ".out")
-            err_fpath = cmd_fpath.replace(".cmd", ".err")
-            uone = cmd_fpath.endswith(".uone.cmd")
-            output = []
-            errored = False
+            output.append(stdout)
+            output.append(stderr)
 
-            for cmd in cmd_from_file(cmd_fpath):
-                stdout, stderr, rcode = cmd_run(cmd, args)
+            err = bool(rcode) and not uone
+            errored |= err
 
-                output.append(stdout)
-                output.append(stderr)
+            yield out_fpath, cmd_fpath, cmd, rcode, uone, err
 
-                err = bool(rcode) and not uone
-                errored |= err
+        if errored:
+            update_file(err_fpath, "\n".join(o.decode("utf-8") for o in output))
 
-                yield out_fpath, cmd_fpath, cmd, rcode, uone, err
-
-            if errored:
-                update_file(err_fpath, "\n".join([o.decode("utf-8") for o in output]))
-
-            if not errored or uone:
-                update_file(out_fpath, "\n".join([o.decode("utf-8") for o in output]))
+        if not errored or uone:
+            update_file(out_fpath, "\n".join(o.decode("utf-8") for o in output))
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run commands from .cmd files, storing output in .out files"
     )
@@ -103,7 +98,7 @@ def parse_args():
     return args
 
 
-def main():
+def main() -> int:
     """Entry point"""
 
     args = parse_args()
@@ -112,23 +107,23 @@ def main():
 
     try:
         print("args:")
-        print("  path: %r" % args.path)
-        print("  recursive: %r" % args.recursive)
+        print(f"  path: {str(args.path)!r}")
+        print(f"  recursive: {str(args.recursive).lower()}")
         print("results:")
         for out_fp, cmd_fp, cmd, rcode, uone, err in produce_cmd_output(args):
             nerrs += int(err)
 
-            print("- out_fp: %r" % out_fp)
-            print("  cmd_fp: %r" % cmd_fp)
-            print("  cmd: %r" % cmd)
-            print("  rcode: %r" % rcode)
-            print("  uone: %r" % uone)
-            print("  err: %r" % err)
+            print(f"- out_fp: {str(out_fp)!r}")
+            print(f"  cmd_fp: {str(cmd_fp)!r}")
+            print(f"  cmd: {cmd!r}")
+            print(f"  rcode: {rcode}")
+            print(f"  uone: {str(uone).lower()}")
+            print(f"  err: {str(err).lower()}")
 
     except OSError as exc:
-        print("# err(%s)" % exc)
+        print(f"# err({exc})")
         return 1
 
-    print("nerrs: %r" % nerrs)
+    print(f"nerrs: {nerrs}")
 
     return nerrs

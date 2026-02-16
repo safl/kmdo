@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 #
 # kmdo documentation build configuration file
 #
 import os
-import sys
+
+from kmdo import __version__
 
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
@@ -19,8 +19,8 @@ master_doc = "index"
 project = "kmdo"
 copyright = "2023, SAFL"
 
-version = "1.0.6"
-release = "1.0.6"
+version = __version__
+release = __version__
 
 exclude_patterns = []
 
