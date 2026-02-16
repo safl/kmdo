@@ -1,13 +1,37 @@
 """Tests for kmdo.cli"""
 import argparse
+import json
 from pathlib import Path
 
-from kmdo.cli import cmd_from_file, cmd_run, expand_path, produce_cmd_output, update_file
+from kmdo.cli import (
+    _yaml_val,
+    cmd_from_file,
+    cmd_run,
+    expand_path,
+    produce_cmd_output,
+    update_file,
+)
 
 
-def make_args(path: Path, recursive: bool = False, shell: str | None = None, exclude: str | None = None) -> argparse.Namespace:
+def make_args(
+    path: Path,
+    recursive: bool = False,
+    shell: str | None = None,
+    exclude: str | None = None,
+    dry_run: bool = False,
+    timeout: float | None = None,
+    output_format: str = "yaml",
+) -> argparse.Namespace:
     """Helper to build an args namespace."""
-    return argparse.Namespace(path=path, recursive=recursive, shell=shell, exclude=exclude)
+    return argparse.Namespace(
+        path=path,
+        recursive=recursive,
+        shell=shell,
+        exclude=exclude,
+        dry_run=dry_run,
+        timeout=timeout,
+        output_format=output_format,
+    )
 
 
 class TestExpandPath:
@@ -49,6 +73,11 @@ class TestCmdRun:
         args = make_args(Path("."))
         _, _, rcode = cmd_run("false", args)
         assert rcode != 0
+
+    def test_timeout_kills_slow_command(self):
+        args = make_args(Path("."), timeout=0.1)
+        _, _, rcode = cmd_run("sleep 10", args)
+        assert rcode == -1
 
 
 class TestCmdFromFile:
@@ -168,3 +197,90 @@ class TestProduceCmdOutput:
         assert len(results) == 2
         assert results[0][2] == "echo one"
         assert results[1][2] == "echo two"
+
+
+class TestDryRun:
+    def test_does_not_execute(self, tmp_path):
+        cmd_file = tmp_path / "test.cmd"
+        cmd_file.write_text("echo hello")
+        args = make_args(tmp_path, dry_run=True)
+
+        results = list(produce_cmd_output(args))
+        assert len(results) == 1
+        _, _, cmd, rcode, _, err = results[0]
+        assert cmd == "echo hello"
+        assert rcode is None
+        assert err is False
+
+    def test_does_not_create_files(self, tmp_path):
+        cmd_file = tmp_path / "test.cmd"
+        cmd_file.write_text("echo hello")
+        args = make_args(tmp_path, dry_run=True)
+
+        list(produce_cmd_output(args))
+        assert not (tmp_path / "test.out").exists()
+        assert not (tmp_path / "test.err").exists()
+
+
+class TestTimeout:
+    def test_timeout_in_produce_cmd_output(self, tmp_path):
+        cmd_file = tmp_path / "slow.cmd"
+        cmd_file.write_text("sleep 10")
+        args = make_args(tmp_path, timeout=0.1)
+
+        results = list(produce_cmd_output(args))
+        assert len(results) == 1
+        assert results[0][3] == -1  # rcode
+        assert results[0][5] is True  # err
+
+
+class TestYamlVal:
+    def test_none(self):
+        assert _yaml_val(None) == "null"
+
+    def test_bool_true(self):
+        assert _yaml_val(True) == "true"
+
+    def test_bool_false(self):
+        assert _yaml_val(False) == "false"
+
+    def test_string(self):
+        assert _yaml_val("hello") == "'hello'"
+
+    def test_int(self):
+        assert _yaml_val(42) == "42"
+
+
+class TestMainOutput:
+    def test_yaml_output_is_streamed(self, tmp_path, capsys):
+        import sys
+        cmd_file = tmp_path / "test.cmd"
+        cmd_file.write_text("echo hello")
+
+        sys.argv = ["kmdo", str(tmp_path)]
+        from kmdo.cli import main
+        rcode = main()
+        assert rcode == 0
+
+        captured = capsys.readouterr()
+        assert captured.out.startswith("args:\n")
+        assert "results:" in captured.out
+        assert "nerrs: 0" in captured.out
+
+    def test_jsonl_output(self, tmp_path, capsys):
+        import sys
+        cmd_file = tmp_path / "test.cmd"
+        cmd_file.write_text("echo hello")
+
+        sys.argv = ["kmdo", "-f", "jsonl", str(tmp_path)]
+        from kmdo.cli import main
+        rcode = main()
+        assert rcode == 0
+
+        captured = capsys.readouterr()
+        lines = captured.out.strip().splitlines()
+        assert len(lines) == 1
+        parsed = json.loads(lines[0])
+        assert parsed["cmd"] == "echo hello"
+        assert parsed["rcode"] == 0
+

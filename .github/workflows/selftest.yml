@@ -55,10 +55,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
-      run: python3 -m pip install --upgrade pip pytest
+      run: python3 -m pip install --upgrade pip pytest pytest-cov -e .
 
     - name: Run tests
-      run: python3 -m pytest
+      run: python3 -m pytest --cov=kmdo --cov-report=term-missing
 
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
